@@ -1,6 +1,7 @@
 // Bridge/CommandProcessor.cs
 using System;
 using System.Collections.Generic;
+using CADFramework.GeometryKernel.Events;
 using CADFramework.GeometryKernel.Operations;
 using CADFramework.GeometryKernel.Primitives;
 
@@ -80,11 +81,15 @@ namespace CADFramework.Bridge
         public void Execute()
         {
             _shapeList.Add(_shape);
+            GeometryEventPublisher.Instance.Publish(
+                new GeometryEventArgs(GeometryEventType.ShapeAdded, _shape.Id, _shape.Name, _shape));
         }
         
         public void Undo()
         {
             _shapeList.Remove(_shape);
+            GeometryEventPublisher.Instance.Publish(
+                new GeometryEventArgs(GeometryEventType.ShapeRemoved, _shape.Id, _shape.Name, _shape));
         }
     }
     
@@ -94,10 +99,7 @@ namespace CADFramework.Bridge
     public class MoveShapeCommand : ICommand
     {
         private IShape _shape;
-        private TransformMatrix _oldMatrix;
         private TransformMatrix _newMatrix;
-        private Point3D _oldPosition;
-        private Point3D _newPosition;
         
         public string Description => $"Move {_shape.Name}";
         
@@ -105,15 +107,13 @@ namespace CADFramework.Bridge
         {
             _shape = shape;
             _newMatrix = TransformMatrix.Translation(delta.X, delta.Y, delta.Z);
-            
-            // 保存旧位置（简化处理）
-            if (shape is Rectangle rect)
-                _oldPosition = rect.Center;
         }
         
         public void Execute()
         {
             _shape.Transform(_newMatrix);
+            GeometryEventPublisher.Instance.Publish(
+                new GeometryEventArgs(GeometryEventType.ShapeModified, _shape.Id, _shape.Name, _shape));
         }
         
         public void Undo()
@@ -122,6 +122,8 @@ namespace CADFramework.Bridge
                                                        -_newMatrix.Matrix[1, 3], 
                                                        -_newMatrix.Matrix[2, 3]);
             _shape.Transform(inverse);
+            GeometryEventPublisher.Instance.Publish(
+                new GeometryEventArgs(GeometryEventType.ShapeModified, _shape.Id, _shape.Name, _shape));
         }
     }
     

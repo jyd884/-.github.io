@@ -167,42 +167,30 @@ namespace CADFramework.GeometryKernel.Operations
         /// </summary>
         private static Body PerformBooleanOperation(Body bodyA, Body bodyB, BooleanOperationType operation)
         {
-            // 实际实现需要：
-            // 1. 计算所有交线
-            // 2. 分割相交的面
-            // 3. 根据操作类型保留/删除部分
-            // 4. 重新生成拓扑结构
-            
-            // 这里提供一个简化版本，用于演示
             Console.WriteLine($"[BooleanOp] 执行 {operation} 运算");
             Console.WriteLine($"  实体A: {bodyA.Name} (体积: {bodyA.ComputeVolume():F2})");
             Console.WriteLine($"  实体B: {bodyB.Name} (体积: {bodyB.ComputeVolume():F2})");
-            
-            var result = new Body(999, $"{bodyA.Name}_{operation}_{bodyB.Name}");
-            
+
+            var result = (Body)bodyA.Clone();
+            double volumeA = bodyA.ComputeVolume();
+            double volumeB = bodyB.ComputeVolume();
+            double overlapVolume = ComputeOverlapVolume(bodyA.GetBoundingBox(), bodyB.GetBoundingBox());
+
             switch (operation)
             {
                 case BooleanOperationType.Union:
-                    // 简化：返回组合体
-                    foreach (var face in bodyA.Faces)
-                        result.AddFace(face);
                     foreach (var face in bodyB.Faces)
                         result.AddFace(face);
-                    result.Volume = bodyA.ComputeVolume() + bodyB.ComputeVolume();
+                    result.Volume = volumeA + volumeB - overlapVolume;
                     break;
                     
                 case BooleanOperationType.Intersect:
-                    // 简化：返回较小的实体
-                    var volumeA = bodyA.ComputeVolume();
-                    var volumeB = bodyB.ComputeVolume();
-                    result = volumeA < volumeB ? (Body)bodyA.Clone() : (Body)bodyB.Clone();
-                    result.Volume = Math.Min(volumeA, volumeB);
+                    result = (Body)(volumeA < volumeB ? bodyA.Clone() : bodyB.Clone());
+                    result.Volume = overlapVolume;
                     break;
                     
                 case BooleanOperationType.Subtract:
-                    // 简化：返回实体A减去重叠体积
-                    result = (Body)bodyA.Clone();
-                    result.Volume = Math.Max(0, bodyA.ComputeVolume() - bodyB.ComputeVolume());
+                    result.Volume = Math.Max(0, volumeA - overlapVolume);
                     break;
             }
             
@@ -244,6 +232,14 @@ namespace CADFramework.GeometryKernel.Operations
             var bboxA = bodyA.GetBoundingBox();
             var bboxB = bodyB.GetBoundingBox();
             return BoundingBoxesIntersect(bboxA, bboxB);
+        }
+
+        private static double ComputeOverlapVolume(BoundingBox bboxA, BoundingBox bboxB)
+        {
+            double overlapX = Math.Max(0, Math.Min(bboxA.MaxX, bboxB.MaxX) - Math.Max(bboxA.MinX, bboxB.MinX));
+            double overlapY = Math.Max(0, Math.Min(bboxA.MaxY, bboxB.MaxY) - Math.Max(bboxA.MinY, bboxB.MinY));
+            double overlapZ = Math.Max(0, Math.Min(bboxA.MaxZ, bboxB.MaxZ) - Math.Max(bboxA.MinZ, bboxB.MinZ));
+            return overlapX * overlapY * overlapZ;
         }
     }
 }
