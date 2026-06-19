@@ -1,0 +1,67 @@
+=== CAD框架演示 - 单一职责原则解耦几何内核与UI ===
+
+【演示1：创建几何对象】
+[OpenGL] 初始化渲染器: 800x600
+[OpenGL] 开始渲染
+[OpenGL] 渲染线段: BaseLine [(0.00, 0.00, 0.00) -> (100.00, 0.00, 0.00)]
+[OpenGL] 渲染矩形: BaseRect at (50.00, 50.00, 0.00)
+[OpenGL] 结束渲染
+[Bridge] 接收到几何事件: [10:30:15] ShapeAdded: BaseLine (ID:1)
+[Bridge] 接收到几何事件: [10:30:15] ShapeAdded: BaseRect (ID:2)
+
+【演示2：选择对象】
+[View] 鼠标点击位置: (50.00, 50.00, 0.00)
+[View] 选中形状: BaseRect
+[Bridge] 接收到几何事件: [10:30:15] SelectionChanged: BaseRect (ID:2)
+
+=== 属性面板 ===
+对象: BaseRect (ID: 2)
+类型: Rectangle
+中心: (50.00, 50.00, 0.00)
+宽度: 100
+高度: 80
+面积: 8000.00
+边界框: [0.00, 10.00, 0.00] -> [100.00, 90.00, 0.00]
+================
+
+【演示3：移动操作和撤销/重做】
+[View] 鼠标点击位置: (80.00, 80.00, 0.00)
+[View] 命令执行: Move BaseRect (执行)
+[OpenGL] 开始渲染
+[OpenGL] 渲染矩形: BaseRect at (80.00, 80.00, 0.00)
+[OpenGL] 结束渲染
+
+执行撤销...
+[View] 命令执行: Move BaseRect (撤销)
+[OpenGL] 开始渲染
+[OpenGL] 渲染矩形: BaseRect at (50.00, 50.00, 0.00)
+
+【演示4：拉伸操作 - 将2D形状转换为3D实体】
+[OpenGL] 开始渲染
+[OpenGL] 渲染拉伸体: ExtrudedBody (高度: 50)
+[OpenGL] 结束渲染
+
+【架构说明】
+============================================================
+1. 几何内核（GeometryKernel）:
+   - 完全不依赖UI
+   - 只负责几何定义和计算
+   - 通过事件发布器通知变化
+
+2. 桥接层（Bridge）:
+   - GeometryObserver: 监听几何事件
+   - SelectionManager: 管理选择状态
+   - CommandProcessor: 处理命令（支持撤销/重做）
+
+3. 表现层（Presentation）:
+   - IRenderer: 渲染器接口，可替换实现
+   - CADView: 视图层，只负责显示和交互
+   - PropertyPanel: 属性面板
+
+4. 单一职责原则体现:
+   ✓ 几何内核不关心如何显示
+   ✓ UI不包含几何计算逻辑
+   ✓ 桥接层处理两者通信
+   ✓ 可以轻松替换渲染器（OpenGL→DirectX）
+   ✓ 可以轻松添加新视图（属性面板、树形视图等）
+============================================================
