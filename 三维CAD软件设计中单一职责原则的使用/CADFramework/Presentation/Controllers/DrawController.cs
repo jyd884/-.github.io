@@ -143,10 +143,6 @@ namespace CADFramework.Presentation.Controllers
             var command = new CreateShapeCommand(_shapeList, line);
             _commandProcessor.ExecuteCommand(command);
             
-            // 发布事件
-            GeometryEventPublisher.Instance.Publish(
-                new GeometryEventArgs(GeometryEventType.ShapeAdded, line.Id, line.Name, line));
-            
             Console.WriteLine($"[DrawController] 创建线段: {line}");
         }
         
@@ -167,9 +163,6 @@ namespace CADFramework.Presentation.Controllers
             var command = new CreateShapeCommand(_shapeList, rect);
             _commandProcessor.ExecuteCommand(command);
             
-            GeometryEventPublisher.Instance.Publish(
-                new GeometryEventArgs(GeometryEventType.ShapeAdded, rect.Id, rect.Name, rect));
-            
             Console.WriteLine($"[DrawController] 创建矩形: {rect}");
         }
         
@@ -183,9 +176,6 @@ namespace CADFramework.Presentation.Controllers
             
             var command = new CreateShapeCommand(_shapeList, circle);
             _commandProcessor.ExecuteCommand(command);
-            
-            GeometryEventPublisher.Instance.Publish(
-                new GeometryEventArgs(GeometryEventType.ShapeAdded, circle.Id, circle.Name, circle));
             
             Console.WriteLine($"[DrawController] 创建圆: {circle}");
         }

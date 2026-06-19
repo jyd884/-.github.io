@@ -71,11 +71,6 @@ namespace CADFramework.Demo
             _commandProcessor.ExecuteCommand(createLineCmd);
             _commandProcessor.ExecuteCommand(createRectCmd);
 
-            GeometryEventPublisher.Instance.Publish(
-                new GeometryEventArgs(GeometryEventType.ShapeAdded, line.Id, line.Name, line));
-            GeometryEventPublisher.Instance.Publish(
-                new GeometryEventArgs(GeometryEventType.ShapeAdded, rect.Id, rect.Name, rect));
-
             _view.Refresh();
         }
 
@@ -124,12 +119,6 @@ namespace CADFramework.Demo
 
                 var createBodyCmd = new CreateShapeCommand(_globalShapeList, extrudedBody);
                 _commandProcessor.ExecuteCommand(createBodyCmd);
-
-                GeometryEventPublisher.Instance.Publish(
-                    new GeometryEventArgs(GeometryEventType.ShapeAdded,
-                                         extrudedBody.Id,
-                                         extrudedBody.Name,
-                                         extrudedBody));
 
                 _view.Refresh();
 
