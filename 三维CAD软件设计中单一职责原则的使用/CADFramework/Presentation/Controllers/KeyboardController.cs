@@ -1,6 +1,8 @@
 // Presentation/Controllers/KeyboardController.cs
 using System;
 using System.Collections.Generic;
+using CADFramework.Bridge;
+using CADFramework.GeometryKernel.Primitives;
 
 namespace CADFramework.Presentation.Controllers
 {

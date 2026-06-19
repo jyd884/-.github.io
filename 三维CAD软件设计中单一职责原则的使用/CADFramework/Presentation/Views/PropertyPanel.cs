@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using CADFramework.Bridge;
+using CADFramework.GeometryKernel.Operations;
 using CADFramework.GeometryKernel.Primitives;
 
 namespace CADFramework.Presentation.Views

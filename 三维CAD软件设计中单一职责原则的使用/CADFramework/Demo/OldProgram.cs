@@ -10,7 +10,7 @@ using CADFramework.Presentation.Views;
 
 namespace CADFramework.Demo
 {
-    class Program
+    class OldProgramTemplate
     {
         private static List<IShape> _globalShapeList = new List<IShape>();
         private static GeometryObserver _observer;
@@ -19,7 +19,7 @@ namespace CADFramework.Demo
         private static CADView _view;
         private static PropertyPanel _propertyPanel;
         
-        static void Main(string[] args)
+        static void LegacyMain(string[] args)
         {
             Console.WriteLine("=== CAD框架演示 - 单一职责原则解耦几何内核与UI ===\n");
             
