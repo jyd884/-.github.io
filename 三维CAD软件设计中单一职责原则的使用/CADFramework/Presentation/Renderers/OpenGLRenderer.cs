@@ -1,6 +1,7 @@
 // Presentation/Renderers/OpenGLRenderer.cs
 using System;
 using System.Collections.Generic;
+using CADFramework.GeometryKernel.Operations;
 using CADFramework.GeometryKernel.Primitives;
 
 namespace CADFramework.Presentation.Renderers

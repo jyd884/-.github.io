@@ -107,7 +107,7 @@ namespace CADFramework.Presentation.Controllers
                 case 'C':
                     SetMode(ControllerType.DrawCircle);
                     break;
-                case 27: // ESC键
+                case (char)27: // ESC键
                     CancelCurrentOperation();
                     break;
             }
