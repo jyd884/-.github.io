@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>澄闪宝宝的请求</title>
+    <style>
+
+        h1{
+            text-align: center;
+            color: pink; 
+
+        }
+        .centre {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .pink-btn {
+            background-color: #ff77aa;
+            color: #ffffff;
+            border: none;
+            padding: 20px 36px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 6px 0;
+            display: inline-block;
+            transition: transform 0.2s ease, margin-left 0.2s ease;
+        }
+
+        .pink-btn:hover {
+            background-color: #ff5f5f;
+        }
+        .love-full{
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 50vh;
+            margin: 0;
+            border-radius: 0;
+            transform: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4vw;
+            z-index: 10;
+            transition: height 0.3s ease, font-size 0.3s ease;
+        }
+        .no-topleft{
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 11;
+            transform-origin: top left;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>你会在更新后继续和澄闪玩嘛</h1>
+
+    <div class="centre">
+        <img id="mainImg" height="500px" width="auto" src="./ff548ac6045f12be13a6523db55e3e99bb56f58b.jpg@1192w.avif"
+            alt="为什么显示不出来，自己去换电脑">
+        <div>
+            <button id="loveBtn" class="pink-btn">我最爱澄闪了</button>
+            <button id="noBtn" class="pink-btn">这次不可以哦</button>
+        </div>
+
+    </div>
+    <script>
+        (function(){
+            var loveBtn = document.getElementById('loveBtn');
+            var noBtn = document.getElementById('noBtn');
+            var mainImg = document.getElementById('mainImg');
+            var clickCount = 0;
+            var maxClicks = 10;
+            var baseLoveWidth = loveBtn.getBoundingClientRect().width;
+            var baseGap = 12; // 基础间距，避免贴太近
+            noBtn.addEventListener('click', function(){
+                if (clickCount < maxClicks/2) {
+                    clickCount++;
+                    var scale = 1 + 0.5 * clickCount; // 每次稍微变大
+                    loveBtn.style.transform = 'scale(' + scale + ')';
+                    // 根据放大后的按钮可视宽度，动态右移右侧按钮，避免被遮挡
+                    var newWidth = loveBtn.getBoundingClientRect().width;
+                    var extraRight = Math.max(0, (newWidth - baseLoveWidth) / 2);
+                    noBtn.style.marginLeft = (baseGap + extraRight) + 'px';
+                    mainImg.src = './d27aa1d35b402a4ce3c6b8fa2674765cddaaf1a2.png@1192w.avif';
+                    
+                } 
+                else if(clickCount<maxClicks){
+                    clickCount++;
+                    var scale = 1 + 1 * clickCount; // 每次稍微变大
+                    loveBtn.style.transform = 'scale(' + scale + ')';
+                    // 右侧按钮：超过一半后移到左上角并逐步缩小
+                    if (!noBtn.classList.contains('no-topleft')) {
+                        noBtn.classList.add('no-topleft');
+                    }
+                    var half = maxClicks / 2;
+                    var progress = Math.min(1, Math.max(0, (clickCount - half) / half));
+                    var rightScale = Math.max(0.3, 1 - 0.7 * progress); // 最小缩到0.3
+                    noBtn.style.transform = 'scale(' + rightScale + ')';
+                    noBtn.style.marginLeft = '0px';
+                    mainImg.src = './d27aa1d35b402a4ce3c6b8fa2674765cddaaf1a2.png@1192w.avif';
+                }
+                
+                
+                else {
+                    mainImg.src='./da184c8e22686736af56b0cd8743a32b2e65675b.jpg@1192w.avif'
+                    // 超过最大点击次数：左侧按钮恢复初始大小并回到图片下方居中，右侧按钮消失
+                    loveBtn.classList.remove('love-full');
+                    loveBtn.style.transform = 'scale(1)';
+                    loveBtn.style.position = '';
+                    loveBtn.style.width = '';
+                    loveBtn.style.height = '';
+                    loveBtn.style.margin = '10px 6px 0';
+                    // 隐藏右侧按钮
+                    noBtn.style.display = 'none';
+                }
+                
+            });
+            // 左侧按钮：点击后把图片改为背景图并固定，铺满全屏
+            loveBtn.addEventListener('click', function(){
+                // 隐藏原<img>以避免遮挡
+                if (mainImg) {
+                    mainImg.style.display = 'none';
+                }
+                // 两个按钮都隐藏
+                loveBtn.style.display = 'none';
+                noBtn.style.display = 'none';
+                // 背景图设置到body，大小铺满，固定不随滚动
+                var body = document.body;
+                var docEl = document.documentElement;
+                body.style.margin = '0';
+                docEl.style.height = '100%';
+                body.style.minHeight = '100vh';
+                body.style.backgroundImage = "url('./b6de06db03c55c4268404d019672ebacb076270a.jpg@1192w.avif')";
+                body.style.backgroundSize = 'cover';
+                body.style.backgroundRepeat = 'no-repeat';
+                body.style.backgroundPosition = 'center center';
+                body.style.backgroundAttachment = 'fixed';
+                // 修改标题文案
+                var titleEl = document.querySelector('h1');
+                if (titleEl) {
+                    titleEl.textContent = '我就知道博士你永远会选择我';
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>
